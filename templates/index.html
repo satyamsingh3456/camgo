@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Recorder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        video {
+            max-width: 100%;
+            height: auto;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #videoFeed {
+            max-width: 640px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Video Recorder</h1>
+    
+    <!-- Live video feed section -->
+    <div id="videoFeed">
+        <h2>Live Video Feed</h2>
+        <img src="{{ url_for('video_feed') }}" alt="Video Feed" />
+    </div>
+    
+    <div>
+        <button id="startButton" onclick="startRecording()">Start Recording</button>
+        <button id="stopButton" onclick="stopRecording()" disabled>Stop Recording</button>
+        <button id="downloadButton" onclick="downloadVideo()" disabled>Download Video</button>
+    </div>
+
+    <script>
+        // Function to start recording
+        function startRecording() {
+            fetch('/start_recording', {
+                method: 'POST'
+            }).then(response => {
+                if (response.ok) {
+                    document.getElementById('startButton').disabled = true;
+                    document.getElementById('stopButton').disabled = false;
+                    document.getElementById('downloadButton').disabled = true;
+                }
+            }).catch(error => console.error('Error starting recording:', error));
+        }
+
+        // Function to stop recording
+        function stopRecording() {
+            fetch('/stop_recording', {
+                method: 'POST'
+            }).then(response => {
+                if (response.ok) {
+                    document.getElementById('startButton').disabled = false;
+                    document.getElementById('stopButton').disabled = true;
+                    document.getElementById('downloadButton').disabled = false;
+                }
+            }).catch(error => console.error('Error stopping recording:', error));
+        }
+
+        // Function to download the recorded video
+        function downloadVideo() {
+            window.location.href = '/download_video';
+        }
+    </script>
+</body>
+</html>
